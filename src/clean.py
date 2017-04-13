@@ -5,24 +5,22 @@ import shutil
 import create_default_structure
 
 USER = getpass.getuser()
-
+STRUCTURE = 'structure.json'
 class Clean:
 
-    def __init__(self, default_structure=True, custom_structure=None, ignore_extensions=None):
+    def __init__(self, custom_structure=STRUCTURE, ignore_extensions=None):
         if ignore_extensions is None or type(ignore_extensions) is not list:
             raise ValueError('Argument: [{}] must be list not {}'.format('ignore_extensions', str(type(ignore_extensions))))
-        if default_structure is False:
-            self.structure = custom_structure
+        if os.path.isfile(custom_structure):
+            with open(custom_structure, 'r')as f: self.structure = json.load(f)
         else:
-            if os.path.isfile('structure.json'):
-                with open('structure.json', 'r')as f: self.structure = json.load(f)
-            else:
-                try:
-                    create_default_structure.run()
-                    with open('structure.json', 'r')as f:
-                        self.structure = json.load(f)
-                except Exception as ex:
-                    print('ERROR: [{}]'.format(str(ex)))
+            try:
+                create_default_structure.run()
+                with open(custom_structure, 'r')as f:
+                    self.structure = json.load(f)
+            except Exception as ex:
+                print('ERROR: [{}]'.format(str(ex)))
+        print("Loading structure [{}]".format(custom_structure))
 
         self.home = os.path.expanduser("~")
         self.excluded_directories = [v['folder'] for _, v in self.structure.items()]
@@ -151,6 +149,7 @@ class Clean:
         for key, value in self.structure.items():
             for file in files:
                 file_name, extension = os.path.splitext(file['file'])
+                extension = extension.lower()
                 if extension in self.excluded_extension:
                     print("Excluding: [{}]".format(os.path.join(file['path'], file['file'])))
                 elif extension in value['extensions']:
@@ -166,10 +165,10 @@ class Clean:
                                     new_folder)
 
 
-def main(directory, ignore_ext=None, use_home=True, exclude_dirs=None, exclude_files=None, move_dirs=False, walk=False):
-    clean = Clean(ignore_extensions=ignore_ext)
+def main(directory, custom=None, ignore_ext=None, use_home=True, exclude_dirs=None, exclude_files=None, move_dirs=False, walk=False):
+    clean = Clean(ignore_extensions=ignore_ext,
+                  custom_structure=custom)
     directory = clean.set_current_directory(directory, user_home_dir=use_home)
-    print(excluded_directories)
     clean.clean(directory,
                 auto_create_folders=True,
                 walk=walk,
@@ -178,12 +177,12 @@ def main(directory, ignore_ext=None, use_home=True, exclude_dirs=None, exclude_f
                 exclude_files=exclude_files)
 
 if __name__ == '__main__':
-    excluded_directories = ['DCIM', "{}'s Files".format(USER), '100APPLE', 'databases']
-    excluded_files = ['ci_data_library.json', 'mutation_data.json']
-
-    main('desktop',
-         ignore_ext=['.lnk', '.url', '.py'],
+    dls = os.path.join(os.path.expanduser("~"), "Downloads")
+    excluded_directories = [i for i in os.listdir(dls) if os.path.isdir(os.path.join(dls, i))]
+    main('downloads',
+         custom='downloads_structure.json',
+         ignore_ext=[],
          walk=True,
          move_dirs=False,
-         exclude_dirs=excluded_directories,
+         exclude_dirs=excluded_directories + ['Program Files', 'Program Files (x86)'],
          exclude_files=[])

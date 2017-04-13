@@ -1,0 +1,97 @@
+{
+    "data": {
+        "extensions": [
+            ".rar",
+            ".zip",
+            ".tar",
+            ".gz",
+            ".bz",
+            ".tar.gz",
+            ".tar.gz",
+            ".tar.bz",
+            ".whl",
+            ".tar.bz2",
+            ".bz2",
+            ".7z"
+        ],
+        "folder": "Data"
+    },
+    "excel": {
+        "extensions": [
+            ".xlsx",
+            ".csv",
+            ".xls"
+        ],
+        "folder": "Excel"
+    },
+    "executable": {
+        "extensions": [
+            ".exe",
+            ".msi"
+        ],
+        "folder": "Executables"
+    },
+    "misc": {
+        "extensions": [
+            ".json",
+            ".ppt",
+            ".dmg",
+            ".flp",
+            ".html",
+            ".xml",
+            ".tmp",
+            ".deskthemepack",
+            ".themepack",
+            ".lnk",
+            ".url",
+            ".pptx"
+        ],
+        "folder": "Misc"
+    },
+    "pictures": {
+        "extensions": [
+            ".png",
+            ".jpeg",
+            ".jpg"
+        ],
+        "folder": "Pictues"
+    },
+    "python": {
+        "extensions": [
+            ".py"
+        ],
+        "folder": "Python"
+    },
+    "sound": {
+        "extensions": [
+            ".wav",
+            ".mp3",
+            ".mid",
+            ".midi"
+        ],
+        "folder": "Sound"
+    },
+    "text": {
+        "extensions": [
+            ".doc",
+            ".txt",
+            ".docx",
+            ".pdf",
+            ".rtf"
+        ],
+        "folder": "Text"
+    },
+    "torrent": {
+        "extensions": [
+            ".torrent",
+            ".iso"
+        ],
+        "folder": "Torrents"
+    },
+    "video": {
+        "extensions": [
+            ".flv"
+        ],
+        "folder": "Videos"
+    }
+}
