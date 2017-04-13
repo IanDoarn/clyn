@@ -5,5 +5,5 @@ Clean up windows directories
 ---
 Simple clean :+1:
 ```
-python clean.py -c
+python clean.py
 ```

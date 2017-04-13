@@ -1,0 +1,93 @@
+{
+    "data": {
+        "extensions": [
+            ".rar",
+            ".dat",
+            ".zip",
+            ".tar",
+            ".gz",
+            ".iso"
+        ],
+        "folder": "Data"
+    },
+    "documents": {
+        "extensions": [
+            ".doc",
+            ".docx",
+            ".docm",
+            ".txt"
+        ],
+        "folder": "Documents"
+    },
+    "excel": {
+        "extensions": [
+            ".xlsx",
+            ".xls",
+            ".xlsm"
+        ],
+        "folder": "Excel"
+    },
+    "miscellaneous": {
+        "extensions": [
+            ".json",
+            ".xml",
+            ".flp"
+        ],
+        "folder": "Miscellaneous"
+    },
+    "music": {
+        "extensions": [
+            ".wav",
+            ".mp3",
+            ".ogg",
+            ".midi",
+            ".flac"
+        ],
+        "folder": "Music"
+    },
+    "pictures": {
+        "extensions": [
+            ".jpg",
+            ".jpeg",
+            ".gif",
+            ".png",
+            ".bmp.tiff"
+        ],
+        "folder": "Pictures"
+    },
+    "power_point": {
+        "extensions": [],
+        "folder": "Power Points"
+    },
+    "shortcuts": {
+        "extensions": [
+            ".url",
+            ".lnk"
+        ],
+        "folder": "Shortcuts"
+    },
+    "system": {
+        "extensions": [
+            ".bat",
+            ".exe",
+            ".cmd",
+            ".com",
+            ".ini",
+            ".dll"
+        ],
+        "folder": "System"
+    },
+    "video": {
+        "extensions": [
+            ".mp4",
+            ".avi",
+            ".bsf",
+            ".asf",
+            ".mov",
+            ".qt",
+            ".acvhd",
+            ".flv.swf"
+        ],
+        "folder": "Videos"
+    }
+}
