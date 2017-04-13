@@ -76,3 +76,4 @@ def run(file_name='structure', basic_structure=True, tree=None):
             raise ValueError('tree must be type dict not {}'.format(str(type(tree))))
         with open('data\\{}.json'.format(file_name), 'w')as f:
             json.dump(tree, f, ensure_ascii=False, sort_keys=True, indent=4)
+
