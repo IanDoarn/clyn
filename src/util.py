@@ -8,14 +8,6 @@ def get_file_extension_information(file):
 
     for ext_info in DATA['data']:
         if ext_info[0] == extension:
+            ext_info[1] = ext_info[1].replace('   ', '')
             return ext_info, file_name, extension
     return None, None, extension
-
-if __name__ == '__main__':
-    extensions_list = ['.g', '.rtf', '.xlsx', '.bat', '.pyc', '.cs', '.h']
-    for ext in extensions_list:
-        ext_info, file_name, extension = get_file_extension_information('test.{}'.format(ext))
-        if None not in [ext_info, file_name, extension]:
-            print("{}[{}] {}".format(file_name, ext_info[0], ext_info[1]))
-        else:
-            print("[{}] is not a known file extension".format(extension))

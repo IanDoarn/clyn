@@ -4,7 +4,10 @@ import os
 import getpass
 import shutil
 import collections
+import argparse
+import sys
 import create_default_structures
+import util
 
 # TODO: Fix get_directory_tree, stop from re entering directories
 # TODO: Fix get_files_and_directories, does not properly exclude directories,
@@ -69,11 +72,11 @@ class Clean:
             print('ERROR: [{}]'.format(str(ex)))
             return None
 
-    def get_directory_tree(self, directory, exclude_dirs=None):
+    def get_directory_tree(self, directory, top_down=True, exclude_dirs=None):
         if exclude_dirs is None or type(exclude_dirs) is not list:
             raise ValueError('Argument: [{}] must be list not {}'.format('exclude_dirs', str(type(exclude_dirs))))
         directory_tree = {'head': '', 'directories': []}
-        for root, dirs, files in os.walk(directory, topdown=True):
+        for root, dirs, files in os.walk(directory, topdown=top_down):
             directory_tree['head'] = root
             for directories in dirs:
                 if directories not in exclude_dirs:
@@ -82,18 +85,24 @@ class Clean:
                         contents = [i for i in os.listdir(path) if i not in exclude_dirs]
                         for i in range(len(contents)):
                             c_path = join(path, contents[i])
+                            ext_info, _, extension = util.get_file_extension_information(contents[i].lower())
+                            if ext_info is not None:
+                                ext_info = "[{}] {}".format(ext_info[0], ext_info[1])
+                            else:
+                                ext_info = "[{}] {}".format(extension, 'No information found on extension')
                             if os.path.isdir(c_path):
                                 contents[i] = {'type': 'directory',
-                                               'name': contents[i],
-                                               'extension': None}
+                                               'name': contents[i]}
                             elif os.path.isfile(c_path):
                                 contents[i] = {'type': 'file',
                                                'name': contents[i],
-                                               'extension': os.path.splitext(contents[i])[1]}
+                                               'extension': {'type': extension,
+                                                             'info': ext_info}}
                             else:
                                 contents[i] = {'type': os.path.splitext(contents[i])[0],
                                                'name': os.path.splitext(contents[i])[0],
-                                               'extension': os.path.splitext(contents[i])[1]}
+                                               'extension': {'type': extension,
+                                                             'info': ext_info}}
                         sub_directory_tree = []
                         if contents == []:
                             data = {'directory': directories,
@@ -157,7 +166,7 @@ class Clean:
     @staticmethod
     def move_file(file, from_directory, to_directory):
         try:
-            print("Moving: [{}] [{} -> {}]".format(file,
+            print("Moving: [{}] [{}->{}]".format(file,
                                                    os.path.join(from_directory, file),
                                                    os.path.join(to_directory, file)))
             shutil.move(os.path.join(from_directory, file),
@@ -180,18 +189,18 @@ class Clean:
             except Exception as ex:
                 print('ERROR: {}'.format(str(ex)))
 
-
 if __name__ == '__main__':
     cl = Clean(ignore_extensions=[],
                exclude_dirs=['.git', '.idea', '__pycache__'],
                exclude_files=[])
 
-    head = 'SMSA'
+    head = 'pysms'
 
     directory = cl.set_current_directory(head, user_home_dir=True)
     directory_tree = cl.get_directory_tree(directory, exclude_dirs=cl.excluded_directories)
     tree = {'head': head, 'tree': directory_tree}
 
     file_name = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                             '{}_Tree.json'.format(head.replace('\\', '_').replace(' ', '_')))
+                             'data\\{}_Tree.json'.format(head.replace('\\', '_').replace(' ', '_')))
     write_json_file(tree, file_name)
+
