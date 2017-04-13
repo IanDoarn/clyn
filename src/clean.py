@@ -4,14 +4,14 @@ import os
 import getpass
 import shutil
 import collections
-import create_default_structure
+import create_default_structures
 
 # TODO: Fix get_directory_tree, stop from re entering directories
 # TODO: Fix get_files_and_directories, does not properly exclude directories,
 # TODO: and moves files from sub-dirs when it should not.
 
 USER = getpass.getuser()
-STRUCTURE = 'structure.json'
+STRUCTURE = 'data\\structure.json'
 
 
 def join(path, *paths):
@@ -41,7 +41,7 @@ class Clean:
             with open(custom_structure, 'r')as f: self.structure = json.load(f)
         else:
             try:
-                create_default_structure.run()
+                create_default_structures.run()
                 with open(custom_structure, 'r')as f:
                     self.structure = json.load(f)
             except Exception as ex:
@@ -69,30 +69,6 @@ class Clean:
             print('ERROR: [{}]'.format(str(ex)))
             return None
 
-    # @staticmethod
-    # def get_files_and_directories(directory, default_roots=None, exclude_files=None, exclude_dirs=None):
-    #     if exclude_dirs is None or type(exclude_dirs) is not list:
-    #         raise ValueError('Argument: [{}] must be list not {}'.format('exclude_dirs', str(type(exclude_dirs))))
-    #     if exclude_files is None or type(exclude_files) is not list:
-    #         raise ValueError('Argument: [{}] must be list not {}'.format('exclude_files', str(type(exclude_dirs))))
-    #     files = []
-    #     directories = []
-    #     for root, dirs, dir_files in os.walk(directory, topdown=True):
-    #         dirs = [d for d in dirs if d not in exclude_dirs]
-    #         if root.split('\\')[len(root.split('\\'))-1] not in exclude_dirs:
-    #             for file in dir_files:
-    #                 if file in exclude_files:
-    #                     print("Excluding: [{}]".format(os.path.join(root, file)))
-    #                 else:
-    #                     files.append({'file': file, 'path': root})
-    #
-    #             for direct in dirs:
-    #                 if any(map(lambda item: item in dirs, exclude_dirs)):
-    #                     print("Excluding: [{}]".format(os.path.join(root, direct)))
-    #                 else:
-    #                     directories.append({'directory': direct, 'path': root})
-    #     return files, directories
-
     def get_directory_tree(self, directory, exclude_dirs=None):
         if exclude_dirs is None or type(exclude_dirs) is not list:
             raise ValueError('Argument: [{}] must be list not {}'.format('exclude_dirs', str(type(exclude_dirs))))
@@ -119,7 +95,13 @@ class Clean:
                                                'name': os.path.splitext(contents[i])[0],
                                                'extension': os.path.splitext(contents[i])[1]}
                         sub_directory_tree = []
-                        if len(contents) is not []:
+                        if contents == []:
+                            data = {'directory': directories,
+                                    'path': path,
+                                    'root': root,
+                                    'contents': None}
+                            directory_tree['directories'].append(data)
+                        elif contents is not []:
                             data = {'directory': directories,
                                     'path': path,
                                     'root': root,
@@ -132,6 +114,12 @@ class Clean:
                                                                                  exclude_dirs=exclude_dirs)
                             if sub_directory_tree['directories'] != []:
                                 directory_tree['directories'].append(sub_directory_tree)
+                            else:
+                                data = {'directory': directories,
+                                        'path': path,
+                                        'root': root,
+                                        'contents': None}
+                                directory_tree['directories'].append(data)
             return directory_tree
 
     def create_folders(self, directory, use_default_structure=True, overwrite=False, custom_structure=None):
@@ -193,18 +181,17 @@ class Clean:
                 print('ERROR: {}'.format(str(ex)))
 
 
-
-
 if __name__ == '__main__':
     cl = Clean(ignore_extensions=[],
                exclude_dirs=['.git', '.idea', '__pycache__'],
                exclude_files=[])
 
-    head = 'desktop'
+    head = 'SMSA'
 
     directory = cl.set_current_directory(head, user_home_dir=True)
     directory_tree = cl.get_directory_tree(directory, exclude_dirs=cl.excluded_directories)
     tree = {'head': head, 'tree': directory_tree}
 
-    file_name = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'desktop_tree.json')
+    file_name = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                             '{}_Tree.json'.format(head.replace('\\', '_').replace(' ', '_')))
     write_json_file(tree, file_name)

@@ -9,7 +9,8 @@ to check extensions
 
 import json
 
-structure = {'documents': {'extensions': ['.doc',
+
+STRUCTURE = {'documents': {'extensions': ['.doc',
                                           '.docx',
                                           '.docm',
                                           '.txt'],
@@ -65,9 +66,13 @@ structure = {'documents': {'extensions': ['.doc',
                                               '.xml',
                                               '.flp'],
                                'folder': 'Miscellaneous'}}
-def run():
-    with open('structure.json', 'w')as f:
-        json.dump(structure, f, ensure_ascii=False, sort_keys=True, indent=4)
 
-if __name__ == '__main__':
-    run()
+def run(file_name='structure', basic_structure=True, tree=None):
+    if basic_structure:
+        with open('data\\{}.json'.format(file_name), 'w')as f:
+            json.dump(STRUCTURE, f, ensure_ascii=False, sort_keys=True, indent=4)
+    else:
+        if tree is None or type(tree) is not dict:
+            raise ValueError('tree must be type dict not {}'.format(str(type(tree))))
+        with open('data\\{}.json'.format(file_name), 'w')as f:
+            json.dump(tree, f, ensure_ascii=False, sort_keys=True, indent=4)
